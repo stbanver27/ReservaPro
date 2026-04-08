@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+{% block title %}Negocio — ReservaPro{% endblock %}
+{% block body_class %}admin-page{% endblock %}
+
+{% block body %}
+<div class="admin-layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand"><span class="brand-logo-sm">R</span><span>ReservaPro</span></div>
+    <nav class="sidebar-nav">
+      <a href="/dashboard" class="nav-item"><span class="nav-icon">⊞</span> Dashboard</a>
+      <a href="/admin/appointments" class="nav-item"><span class="nav-icon">📅</span> Reservas</a>
+      <a href="/admin/clients" class="nav-item"><span class="nav-icon">👥</span> Clientes</a>
+      <a href="/admin/services" class="nav-item"><span class="nav-icon">✂️</span> Servicios</a>
+      <a href="/admin/professionals" class="nav-item"><span class="nav-icon">👤</span> Profesionales</a>
+      <a href="/admin/business" class="nav-item active"><span class="nav-icon">🏪</span> Negocio</a>
+      <a href="/" class="nav-item" target="_blank"><span class="nav-icon">🌐</span> Reserva pública</a>
+    </nav>
+    <div class="sidebar-footer">
+      <span id="user-name-display"></span>
+      <button class="btn-logout" onclick="logout()">Salir</button>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Información del negocio</h1>
+        <p class="page-subtitle">Configura los datos de tu establecimiento</p>
+      </div>
+    </div>
+
+    <div id="alert-box" class="alert" style="display:none"></div>
+
+    <div class="card">
+      <div class="card-body">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nombre del negocio *</label>
+            <input type="text" id="f-name" placeholder="Ej: Salón Belle Époque" />
+          </div>
+          <div class="form-group">
+            <label>Email de contacto</label>
+            <input type="email" id="f-email" placeholder="contacto@negocio.cl" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Teléfono</label>
+            <input type="text" id="f-phone" placeholder="+56 9 XXXX XXXX" />
+          </div>
+          <div class="form-group">
+            <label>Dirección</label>
+            <input type="text" id="f-address" placeholder="Av. Ejemplo 1234, Ciudad" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Descripción</label>
+          <textarea id="f-description" rows="3" placeholder="Descripción breve del negocio..."></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Hora apertura</label>
+            <input type="time" id="f-open-time" value="09:00" />
+          </div>
+          <div class="form-group">
+            <label>Hora cierre</label>
+            <input type="time" id="f-close-time" value="19:00" />
+          </div>
+          <div class="form-group">
+            <label>Duración del slot (minutos)</label>
+            <input type="number" id="f-slot-duration" value="30" min="15" step="15" />
+          </div>
+        </div>
+        <div class="form-footer">
+          <button class="btn btn-primary" onclick="saveBusiness()">Guardar cambios</button>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/auth.js"></script>
+<script src="/static/js/dashboard.js"></script>
+<script>
+  // Cargar datos del negocio al iniciar
+  window.addEventListener('DOMContentLoaded', async () => {
+    requireAuth();
+    await loadUserDisplay();
+    try {
+      const biz = await apiFetch('/api/business');
+      document.getElementById('f-name').value = biz.name || '';
+      document.getElementById('f-email').value = biz.email || '';
+      document.getElementById('f-phone').value = biz.phone || '';
+      document.getElementById('f-address').value = biz.address || '';
+      document.getElementById('f-description').value = biz.description || '';
+      document.getElementById('f-open-time').value = biz.open_time || '09:00';
+      document.getElementById('f-close-time').value = biz.close_time || '19:00';
+      document.getElementById('f-slot-duration').value = biz.slot_duration || 30;
+    } catch(e) { /* negocio no configurado aún */ }
+  });
+
+  async function saveBusiness() {
+    const data = {
+      name: document.getElementById('f-name').value,
+      email: document.getElementById('f-email').value,
+      phone: document.getElementById('f-phone').value,
+      address: document.getElementById('f-address').value,
+      description: document.getElementById('f-description').value,
+      open_time: document.getElementById('f-open-time').value,
+      close_time: document.getElementById('f-close-time').value,
+      slot_duration: parseInt(document.getElementById('f-slot-duration').value),
+    };
+    if (!data.name) return showAlert('El nombre del negocio es obligatorio', 'error');
+    try {
+      // Intentar PUT primero, si falla 404 usar POST
+      let res;
+      try {
+        res = await apiFetch('/api/business', { method: 'PUT', body: JSON.stringify(data) });
+      } catch(e) {
+        res = await apiFetch('/api/business', { method: 'POST', body: JSON.stringify(data) });
+      }
+      showAlert('Datos guardados exitosamente', 'success');
+    } catch(e) {
+      showAlert('Error al guardar: ' + e.message, 'error');
+    }
+  }
+
+  function showAlert(msg, type) {
+    const el = document.getElementById('alert-box');
+    el.textContent = msg;
+    el.className = `alert alert-${type}`;
+    el.style.display = 'block';
+    setTimeout(() => el.style.display = 'none', 4000);
+  }
+</script>
+{% endblock %}

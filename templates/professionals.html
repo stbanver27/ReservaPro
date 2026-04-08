@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% block title %}Profesionales — ReservaPro{% endblock %}
+{% block body_class %}admin-page{% endblock %}
+
+{% block body %}
+<div class="admin-layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand"><span class="brand-logo-sm">R</span><span>ReservaPro</span></div>
+    <nav class="sidebar-nav">
+      <a href="/dashboard" class="nav-item"><span class="nav-icon">⊞</span> Dashboard</a>
+      <a href="/admin/appointments" class="nav-item"><span class="nav-icon">📅</span> Reservas</a>
+      <a href="/admin/clients" class="nav-item"><span class="nav-icon">👥</span> Clientes</a>
+      <a href="/admin/services" class="nav-item"><span class="nav-icon">✂️</span> Servicios</a>
+      <a href="/admin/professionals" class="nav-item active"><span class="nav-icon">👤</span> Profesionales</a>
+      <a href="/admin/business" class="nav-item"><span class="nav-icon">🏪</span> Negocio</a>
+      <a href="/" class="nav-item" target="_blank"><span class="nav-icon">🌐</span> Reserva pública</a>
+    </nav>
+    <div class="sidebar-footer">
+      <span id="user-name-display"></span>
+      <button class="btn-logout" onclick="logout()">Salir</button>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Profesionales</h1>
+        <p class="page-subtitle">Equipo de trabajo</p>
+      </div>
+      <button class="btn btn-primary" onclick="openModal()">+ Nuevo profesional</button>
+    </div>
+
+    <div id="alert-box" class="alert" style="display:none"></div>
+
+    <div class="prof-grid" id="prof-grid">
+      <div class="loading">Cargando...</div>
+    </div>
+  </main>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <h3 id="modal-title">Nuevo profesional</h3>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="prof-id" />
+      <div class="form-row">
+        <div class="form-group">
+          <label>Nombre *</label>
+          <input type="text" id="f-name" placeholder="Nombre completo" />
+        </div>
+        <div class="form-group">
+          <label>Especialidad</label>
+          <input type="text" id="f-specialty" placeholder="Ej: Colorista" />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="f-email" placeholder="correo@ejemplo.com" />
+        </div>
+        <div class="form-group">
+          <label>Teléfono</label>
+          <input type="text" id="f-phone" placeholder="+56 9 XXXX XXXX" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Biografía</label>
+        <textarea id="f-bio" rows="2" placeholder="Breve descripción del profesional..."></textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Inicio jornada</label>
+          <input type="time" id="f-work-start" value="09:00" />
+        </div>
+        <div class="form-group">
+          <label>Fin jornada</label>
+          <input type="time" id="f-work-end" value="18:00" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Días laborables</label>
+        <div class="days-picker" id="days-picker">
+          <label class="day-chip"><input type="checkbox" value="0" checked> Lun</label>
+          <label class="day-chip"><input type="checkbox" value="1" checked> Mar</label>
+          <label class="day-chip"><input type="checkbox" value="2" checked> Mié</label>
+          <label class="day-chip"><input type="checkbox" value="3" checked> Jue</label>
+          <label class="day-chip"><input type="checkbox" value="4" checked> Vie</label>
+          <label class="day-chip"><input type="checkbox" value="5"> Sáb</label>
+          <label class="day-chip"><input type="checkbox" value="6"> Dom</label>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="checkbox-label">
+          <input type="checkbox" id="f-active" checked /> Activo
+        </label>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveProfessional()">Guardar</button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/auth.js"></script>
+<script src="/static/js/professionals.js"></script>
+{% endblock %}

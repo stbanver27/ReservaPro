@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Iniciar Sesión — ReservaPro{% endblock %}
+{% block body_class %}login-page{% endblock %}
+
+{% block body %}
+<div class="login-wrapper">
+  <div class="login-brand">
+    <div class="brand-logo">R</div>
+    <h1 class="brand-name">ReservaPro</h1>
+    <p class="brand-tagline">Panel de administración</p>
+  </div>
+
+  <div class="login-card">
+    <h2>Bienvenido</h2>
+    <p class="login-subtitle">Ingresa tus credenciales para continuar</p>
+
+    <div id="login-error" class="alert alert-error" style="display:none"></div>
+
+    <div class="form-group">
+      <label for="email">Correo electrónico</label>
+      <input type="email" id="email" placeholder="admin@reservapro.cl" autocomplete="email" />
+    </div>
+    <div class="form-group">
+      <label for="password">Contraseña</label>
+      <input type="password" id="password" placeholder="••••••••" autocomplete="current-password" />
+    </div>
+
+    <button class="btn btn-primary btn-full" id="login-btn" onclick="doLogin()">
+      Iniciar sesión
+    </button>
+
+    <p class="login-hint">Demo: admin@reservapro.cl / Hola123</p>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/auth.js"></script>
+{% endblock %}

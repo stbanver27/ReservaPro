@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — ReservaPro{% endblock %}
+{% block body_class %}admin-page{% endblock %}
+
+{% block body %}
+{% include "partials/sidebar.html" ignore missing %}
+<div class="admin-layout">
+  <!-- Sidebar inline para no depender de includes -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <span class="brand-logo-sm">R</span>
+      <span>ReservaPro</span>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="/dashboard" class="nav-item active"><span class="nav-icon">⊞</span> Dashboard</a>
+      <a href="/admin/appointments" class="nav-item"><span class="nav-icon">📅</span> Reservas</a>
+      <a href="/admin/clients" class="nav-item"><span class="nav-icon">👥</span> Clientes</a>
+      <a href="/admin/services" class="nav-item"><span class="nav-icon">✂️</span> Servicios</a>
+      <a href="/admin/professionals" class="nav-item"><span class="nav-icon">👤</span> Profesionales</a>
+      <a href="/admin/business" class="nav-item"><span class="nav-icon">🏪</span> Negocio</a>
+      <a href="/" class="nav-item" target="_blank"><span class="nav-icon">🌐</span> Reserva pública</a>
+    </nav>
+    <div class="sidebar-footer">
+      <span id="user-name-display"></span>
+      <button class="btn-logout" onclick="logout()">Salir</button>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Dashboard</h1>
+        <p class="page-subtitle" id="business-name-header">Cargando...</p>
+      </div>
+      <div class="header-date" id="header-date"></div>
+    </div>
+
+    <!-- KPIs -->
+    <div class="kpi-grid" id="kpi-grid">
+      <div class="kpi-card kpi-pending">
+        <div class="kpi-value" id="kpi-pending">—</div>
+        <div class="kpi-label">Pendientes</div>
+      </div>
+      <div class="kpi-card kpi-confirmed">
+        <div class="kpi-value" id="kpi-confirmed">—</div>
+        <div class="kpi-label">Confirmadas hoy</div>
+      </div>
+      <div class="kpi-card kpi-completed">
+        <div class="kpi-value" id="kpi-completed">—</div>
+        <div class="kpi-label">Completadas (mes)</div>
+      </div>
+      <div class="kpi-card kpi-revenue">
+        <div class="kpi-value" id="kpi-revenue">—</div>
+        <div class="kpi-label">Ingresos (mes)</div>
+      </div>
+    </div>
+
+    <!-- Próximas reservas -->
+    <div class="card mt-4">
+      <div class="card-header">
+        <h2 class="card-title">Próximas reservas</h2>
+        <a href="/admin/appointments" class="btn btn-sm btn-outline">Ver todas</a>
+      </div>
+      <div class="card-body">
+        <div id="upcoming-list" class="appointment-list">
+          <div class="loading">Cargando...</div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/auth.js"></script>
+<script src="/static/js/dashboard.js"></script>
+{% endblock %}
