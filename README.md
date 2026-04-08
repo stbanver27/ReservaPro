@@ -101,7 +101,7 @@ http://127.0.0.1:8000
 
 ```txt
 Email: admin@reservapro.cl
-Password: admin123
+Password: Hola123
 ```
 
 ---
